@@ -1,12 +1,16 @@
 using DigitalRaid.Data;
+using DigitalRaid.Helpers;
 using DigitalRaid.Models;
+using DigitalRaid.Services;
+using DigitalRaid.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = ConnectionHelper.GetConnectionString(builder.Configuration);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -16,6 +20,14 @@ builder.Services.AddIdentity<DRUser, IdentityRole>(options => options.SignIn.Req
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IDRRolesService, DRRolesService>();
+builder.Services.AddScoped<IDRCompanyInfoService, DRCompanyInfoService>();
+builder.Services.AddScoped<IDRProjectService, DRProjectService>();
+builder.Services.AddScoped<IDRTicketService, DRTicketService>();
+builder.Services.AddScoped<IDRTicketHistoryService, DRTicketHistoryService>();
+builder.Services.AddScoped<IEmailSender, DREmailService>();
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddControllersWithViews();
 

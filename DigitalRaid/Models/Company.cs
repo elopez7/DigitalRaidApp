@@ -16,4 +16,6 @@ public class Company
     public virtual ICollection<DRUser> Members { get; set; } = new HashSet<DRUser>();
 
     public virtual ICollection<Project> Projects { get; set; } = new HashSet<Project>();
+
+    public virtual ICollection<Invite> Invites { get; set; } = new HashSet<Invite>();
 }
